@@ -1,4 +1,5 @@
 import React from 'react';
+import PhotoCollage from './PhotoCollage';
 
 const About: React.FC = () => {
   return (
@@ -10,16 +11,7 @@ const About: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="relative">
-            <img 
-              src="/gallery/group-photo.jpg"
-              alt="Heaven on Earth Foundation team" 
-              className="rounded-lg shadow-xl w-full h-auto object-cover" 
-            />
-            <div className="absolute -bottom-6 -right-6 bg-orange-500 p-6 rounded-lg shadow-lg hidden md:block">
-              <p className="text-white font-bold text-xl">Since 2010</p>
-            </div>
-          </div>
+          <PhotoCollage />
           
           <div>
             <h3 className="text-2xl font-semibold text-green-800 mb-4">Our Journey</h3>
