@@ -1,0 +1,44 @@
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import About from './components/About';
+import OurWork from './components/OurWork';
+import Impact from './components/Impact';
+import PastEvents from './components/PastEvents';
+import Gallery from './components/Gallery';
+import GetInvolved from './components/GetInvolved';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
+import Admin from './components/Admin';
+import './index.css';
+
+function App() {
+  useEffect(() => {
+    document.title = 'Heaven on Earth Foundation - Catalyst for Sustainable Change';
+  }, []);
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/" element={
+          <div className="min-h-screen bg-white">
+            <Navbar />
+            <Hero />
+            <About />
+            <OurWork />
+            <Impact />
+            <PastEvents />
+            <Gallery />
+            <GetInvolved />
+            <Contact />
+            <Footer />
+          </div>
+        } />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
