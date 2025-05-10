@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import OurWork from './components/OurWork';
+import BeggarAssistance from './components/BeggarAssistance';
 import Impact from './components/Impact';
 import PastEvents from './components/PastEvents';
 import Gallery from './components/Gallery';
@@ -28,6 +29,7 @@ function App() {
             <Hero />
             <About />
             <OurWork />
+            <BeggarAssistance />
             <Impact />
             <PastEvents />
             <Gallery />
