@@ -24,7 +24,7 @@ function App() {
       <Routes>
         <Route path="/admin" element={<Admin />} />
         <Route path="/" element={
-          <div className="min-h-screen bg-white">
+          <div>
             <Navbar />
             <Hero />
             <About />

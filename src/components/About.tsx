@@ -24,11 +24,11 @@ const About: React.FC = () => {
             </div>
           </div>
           
-          <div>
-            <h3 className="text-2xl font-semibold text-green-800 mb-4">Our Journey</h3>
-            <p className="text-gray-700 mb-6 leading-relaxed">
-              Heaven on Earth Foundation was established with a mission to create sustainable change in the lives of underprivileged communities in Delhi. We believe in the power of education, skill development, and community empowerment to break the cycle of poverty.
-            </p>
+           <div className="px-4 sm:px-6 lg:px-8 mx-auto max-w-3xl">
+    <h3 className="text-2xl font-bold text-green-800 mb-4">Our Journey</h3>
+    <p className="text-gray-700 mb-4">
+      Heaven on Earth Foundation was established with a mission to create sustainable change in the lives of underprivileged communities in Delhi. We believe in the power of education, skill development, and community empowerment to break the cycle of poverty.
+    </p>
             <p className="text-gray-700 mb-8 leading-relaxed">
               Our grassroots approach focuses on understanding the unique challenges faced by each community we serve, and developing tailored solutions that address their specific needs while respecting their cultural context.
             </p>

@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  --tw-border-opacity: 1;
+  overflow-x: hidden;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

@@ -11,7 +11,7 @@ const Hero: React.FC = () => {
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src="https://player.vimeo.com/external/434045526.sd.mp4?s=c27eecc69a27dbc4ff2b87d38afc35f1a9e7c02d&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
+          <source src=".\gallery\home.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-black opacity-60"></div>

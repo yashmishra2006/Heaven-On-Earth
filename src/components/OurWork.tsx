@@ -16,7 +16,7 @@ const OurWork: React.FC = () => {
       title: 'Independence Day Celebrations',
       icon: <Gift className="h-6 w-6 text-green-700" />,
       description: 'Annual celebrations bringing communities together to honor our nation and instill patriotic values in children.',
-      image: 'https://images.pexels.com/photos/1301999/pexels-photo-1301999.jpeg'
+      image: './gallery/class-photo.jpg'
     },
     {
       id: 'vocational',
