@@ -51,30 +51,28 @@ const photos: Photo[] = [
 
 const PhotoCollage: React.FC = () => {
   return (
-    <div className="relative w-full h-[500px] overflow-hidden bg-gray-100 rounded-xl">
-      <div className="absolute inset-0 flex flex-wrap gap-4 p-8 transform -rotate-6">
-        {photos.map((photo, index) => (
-          <div
-            key={photo.id}
-            className={`
-              relative overflow-hidden rounded-lg shadow-lg
-              transform transition-all duration-500 hover:scale-105 hover:z-10
-              ${index % 2 === 0 ? 'rotate-3' : '-rotate-3'}
-              w-[calc(25%-1rem)] h-[200px]
-            `}
-            style={{
-              animation: `fadeIn 0.5s ease-out ${index * 0.1}s forwards`,
-              opacity: 0
-            }}
-          >
-            <img
-              src={photo.url}
-              alt={photo.alt}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-20 transition-opacity duration-300 hover:bg-opacity-10" />
-          </div>
-        ))}
+    <div className="relative w-full h-[400px] overflow-hidden -rotate-6 my-20">
+      <div className="absolute inset-0 flex items-center">
+        <div className="flex gap-4 animate-slide">
+          {[...photos, ...photos].map((photo, index) => (
+            <div
+              key={`${photo.id}-${index}`}
+              className="relative min-w-[300px] h-[250px] transform hover:scale-105 transition-transform duration-300"
+              style={{
+                clipPath: 'polygon(10% 0, 100% 0, 90% 100%, 0 100%)',
+                animation: `fadeIn 0.5s ease-out ${index * 0.1}s forwards`,
+                opacity: 0,
+              }}
+            >
+              <img
+                src={photo.url}
+                alt={photo.alt}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black opacity-20 hover:opacity-0 transition-opacity duration-300" />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

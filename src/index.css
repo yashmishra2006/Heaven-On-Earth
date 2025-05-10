@@ -43,6 +43,20 @@
   }
 }
 
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-slide {
+  animation: slide 30s linear infinite;
+  width: max-content;
+}
+
 /* Add styles for photo collage animation */
 @keyframes fadeIn {
   from {

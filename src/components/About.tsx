@@ -4,6 +4,7 @@ import PhotoCollage from './PhotoCollage';
 const About: React.FC = () => {
   return (
     <section id="about" className="py-20 bg-gray-50">
+      <PhotoCollage />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">About Us</h2>
@@ -11,8 +12,6 @@ const About: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <PhotoCollage />
-          
           <div>
             <h3 className="text-2xl font-semibold text-green-800 mb-4">Our Journey</h3>
             <p className="text-gray-700 mb-6 leading-relaxed">
@@ -38,6 +37,12 @@ const About: React.FC = () => {
                 <h5 className="text-green-800 font-semibold mb-2">Our Vision</h5>
                 <p className="text-gray-700 text-sm">A world where every individual has the opportunity to live with dignity, equality, and prosperity.</p>
               </div>
+            </div>
+          </div>
+          
+          <div className="relative">
+            <div className="absolute -bottom-6 -right-6 bg-orange-500 p-6 rounded-lg shadow-lg hidden md:block">
+              <p className="text-white font-bold text-xl">Since 2010</p>
             </div>
           </div>
         </div>
