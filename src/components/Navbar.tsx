@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X, Leaf} from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <a href="#home" className="flex items-center space-x-2">
-              <Heart className={`h-8 w-8 ${isScrolled ? 'text-green-700' : 'text-white'}`} />
+              <Leaf className={`h-8 w-8 ${isScrolled ? 'text-green-700' : 'text-white'}`} />
               <span className={`text-xl font-serif font-semibold ${
                 isScrolled ? 'text-green-800' : 'text-white'
               }`}>
