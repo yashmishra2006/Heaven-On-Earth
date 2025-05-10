@@ -6,7 +6,7 @@ const BeggarAssistance: React.FC = () => {
     <section className="relative h-[600px] w-full overflow-hidden">
       <div className="absolute inset-0">
         <img
-          src="https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg"
+          src="./gallery/street-effort.jpg"
           alt="Street Support Initiative"
           className="w-full h-full object-cover"
         />
@@ -15,7 +15,7 @@ const BeggarAssistance: React.FC = () => {
       
       <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
         <div className="max-w-2xl text-white">
-          <div className="flex items-center mb-4">
+          <div className="  flex items-center mb-4">
             <Heart className="h-8 w-8 text-orange-400 mr-3" />
             <h2 className="text-3xl md:text-4xl font-bold">Street Support Initiative</h2>
           </div>

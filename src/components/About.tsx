@@ -9,9 +9,21 @@ const About: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">About Us</h2>
           <div className="w-20 h-1 bg-orange-500 mx-auto"></div>
-        </div>
+      </div>
+      </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="relative">
+            <img 
+              src="/gallery/group-photo.jpg"
+              alt="Heaven on Earth Foundation team" 
+              className="rounded-lg shadow-xl w-full h-auto object-cover" 
+            />
+            <div className="absolute -bottom-6 -right-6 bg-orange-500 p-6 rounded-lg shadow-lg hidden md:block">
+              <p className="text-white font-bold text-xl">Since 2010</p>
+            </div>
+          </div>
+          
           <div>
             <h3 className="text-2xl font-semibold text-green-800 mb-4">Our Journey</h3>
             <p className="text-gray-700 mb-6 leading-relaxed">
@@ -39,14 +51,7 @@ const About: React.FC = () => {
               </div>
             </div>
           </div>
-          
-          <div className="relative">
-            <div className="absolute -bottom-6 -right-6 bg-orange-500 p-6 rounded-lg shadow-lg hidden md:block">
-              <p className="text-white font-bold text-xl">Since 2010</p>
-            </div>
-          </div>
         </div>
-      </div>
     </section>
   );
 };
