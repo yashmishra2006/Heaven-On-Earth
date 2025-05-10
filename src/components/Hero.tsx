@@ -1,19 +1,36 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import Hls from 'hls.js';
 
 const Hero: React.FC = () => {
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource('/gallery/home/WhatsApp-Video-2025-05-10-at-225049_afb65f4c.m3u8');
+        hls.attachMedia(videoRef.current);
+      } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+        // Safari
+        videoRef.current.src = '/gallery/home/WhatsApp-Video-2025-05-10-at-225049_afb65f4c.m3u8';
+      }
+    }
+  }, []);
+
   return (
     <section id="home" className="relative h-screen flex items-center">
       <div className="absolute inset-0 overflow-hidden">
         <video 
+          ref={videoRef}
           autoPlay 
           loop 
           muted 
           playsInline
           className="w-full h-full object-cover"
-        >
-          <source src=".\gallery\home.mp4" type="video/mp4" />
+        />
+          <source src="./gallery/home/WhatsApp-Video-2025-05-10-at-225049_afb65f4c.m3u8" type="application/vnd.apple.mpegurl" />
           Your browser does not support the video tag.
-        </video>
         <div className="absolute inset-0 bg-black opacity-60"></div>
       </div>
       
