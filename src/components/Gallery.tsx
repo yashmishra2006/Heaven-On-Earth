@@ -1,67 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
-interface GalleryImage {
+export interface GalleryImage {
   id: number;
   src: string;
   alt: string;
   category: string;
 }
 
-// Create a shared type for gallery images that can be imported by Admin
-export type { GalleryImage };
-
-// Create initial images array that can be imported and modified by Admin
-export const initialImages: GalleryImage[] = [
-  {
-    id: 1,
-    src: '/gallery/group-photo.jpg',
-    alt: 'Foundation members and volunteers at an event',
-    category: 'Cultural Events'
-  },
-  {
-    id: 2,
-    src: '/gallery/banner.jpg',
-    alt: 'Health camp and government schemes awareness program',
-    category: 'Health Camps'
-  },
-  {
-    id: 3,
-    src: '/gallery/collage1.jpg',
-    alt: 'Various foundation activities and programs',
-    category: 'Training Programs'
-  },
-  {
-    id: 4,
-    src: 'public/gallery/tree-planting.jpg',
-    alt: 'Environmental initiatives and tree planting',
-    category: 'Environmental'
-  },
-  {
-    id: 5,
-    src: '/gallery/independence.jpg',
-    alt: 'Independence Day celebrations with children',
-    category: 'Independence Day'
-  }
-];
-
 const Gallery: React.FC = () => {
   const categories = ['All', 'Independence Day', 'Health Camps', 'Cultural Events', 'Environmental', 'Training Programs'];
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
-  const [images, setImages] = useState<GalleryImage[]>(initialImages);
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load images from localStorage on component mount
-  React.useEffect(() => {
-    const savedImages = localStorage.getItem('galleryImages');
-    if (savedImages) {
-      setImages(JSON.parse(savedImages));
-    }
+  useEffect(() => {
+    fetchImages();
   }, []);
+
+  const fetchImages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('gallery_images')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setImages(data || []);
+    } catch (err) {
+      setError('Failed to load gallery images');
+      console.error('Error fetching images:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredImages = activeCategory === 'All' 
     ? images 
     : images.filter(image => image.category === activeCategory);
+
+  if (loading) {
+    return (
+      <div className="min-h-[400px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-700 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <section id="gallery" className="py-20 bg-gray-50">
@@ -73,6 +61,12 @@ const Gallery: React.FC = () => {
           </p>
           <div className="w-20 h-1 bg-orange-500 mx-auto mt-4"></div>
         </div>
+
+        {error && (
+          <div className="mb-8 p-4 bg-red-100 text-red-700 rounded-md text-center">
+            {error}
+          </div>
+        )}
 
         <div className="flex flex-wrap justify-center mb-8 gap-2">
           {categories.map((category) => (

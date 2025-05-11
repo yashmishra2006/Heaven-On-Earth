@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, X } from 'lucide-react';
-import { GalleryImage, initialImages } from './Gallery';
+import { supabase } from '../lib/supabase';
+import type { GalleryImage } from './Gallery';
 
 interface PhotoUpload {
   file: File;
@@ -13,11 +14,30 @@ const Admin: React.FC = () => {
   const [uploads, setUploads] = useState<PhotoUpload[]>([]);
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(() => {
-    const saved = localStorage.getItem('galleryImages');
-    return saved ? JSON.parse(saved) : initialImages;
-  });
+  const [images, setImages] = useState<GalleryImage[]>([]);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      fetchImages();
+    }
+  }, [isAuthenticated]);
+
+  const fetchImages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('gallery_images')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setImages(data || []);
+    } catch (err) {
+      setError('Failed to load gallery images');
+      console.error('Error fetching images:', err);
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,29 +83,50 @@ const Admin: React.FC = () => {
 
   const handleUpload = async () => {
     try {
+      setLoading(true);
       const incompleteUploads = uploads.filter(upload => !upload.category || !upload.alt);
       if (incompleteUploads.length > 0) {
         setError('Please fill in category and alt text for all photos');
         return;
       }
 
-      // Convert uploads to gallery images
-      const newImages: GalleryImage[] = uploads.map((upload, index) => ({
-        id: Date.now() + index,
-        src: upload.preview,
-        alt: upload.alt,
-        category: upload.category
-      }));
+      for (const upload of uploads) {
+        // Upload image to Supabase Storage
+        const fileExt = upload.file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('gallery')
+          .upload(fileName, upload.file);
 
-      // Update gallery images in state and localStorage
-      const updatedImages = [...galleryImages, ...newImages];
-      setGalleryImages(updatedImages);
-      localStorage.setItem('galleryImages', JSON.stringify(updatedImages));
+        if (uploadError) throw uploadError;
+
+        // Get public URL for the uploaded image
+        const { data: { publicUrl } } = supabase.storage
+          .from('gallery')
+          .getPublicUrl(fileName);
+
+        // Store image metadata in the database
+        const { error: dbError } = await supabase
+          .from('gallery_images')
+          .insert({
+            src: publicUrl,
+            alt: upload.alt,
+            category: upload.category
+          });
+
+        if (dbError) throw dbError;
+      }
+
+      // Refresh the gallery images
+      await fetchImages();
       
       setUploads([]);
       setError(null);
     } catch (err) {
       setError('Failed to upload photos. Please try again.');
+      console.error('Upload error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -206,9 +247,12 @@ const Admin: React.FC = () => {
             </div>
             <button
               onClick={handleUpload}
-              className="mt-6 px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800"
+              disabled={loading}
+              className={`mt-6 px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 ${
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
-              Upload All Photos
+              {loading ? 'Uploading...' : 'Upload All Photos'}
             </button>
           </div>
         )}
@@ -216,7 +260,7 @@ const Admin: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4">Current Gallery Images</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {galleryImages.map((image) => (
+            {images.map((image) => (
               <div key={image.id} className="border rounded-lg overflow-hidden">
                 <img
                   src={image.src}
