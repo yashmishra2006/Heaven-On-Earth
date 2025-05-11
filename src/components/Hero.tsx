@@ -5,7 +5,7 @@ import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Importing the icon
 const Hero: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isVideoVisible, setIsVideoVisible] = useState(false);
-  const [isMuted, setIsMuted] = useState(false); // Video starts unmuted
+  const [isMuted, setIsMuted] = useState(true); // Video starts unmuted
 
   useEffect(() => {
     const observer = new IntersectionObserver(
