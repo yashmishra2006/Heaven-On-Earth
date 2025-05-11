@@ -1,22 +1,41 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 
 const Hero: React.FC = () => {
-
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVideoVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
     if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    let hls: Hls | null = null;
+    if (isVideoVisible && videoRef.current) {
       if (Hls.isSupported()) {
-        const hls = new Hls();
+        hls = new Hls();
         hls.loadSource('/gallery/home/WhatsApp-Video-2025-05-10-at-225049_afb65f4c.m3u8');
         hls.attachMedia(videoRef.current);
       } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-        // Safari
         videoRef.current.src = '/gallery/home/WhatsApp-Video-2025-05-10-at-225049_afb65f4c.m3u8';
       }
     }
-  }, []);
+    return () => {
+      hls?.destroy();
+    };
+  }, [isVideoVisible]);
 
   return (
     <section id="home" className="relative h-screen flex items-center">
@@ -29,11 +48,10 @@ const Hero: React.FC = () => {
           playsInline
           className="w-full h-full object-cover"
         />
-          <source src="./gallery/home/WhatsApp-Video-2025-05-10-at-225049_afb65f4c.m3u8" type="application/vnd.apple.mpegurl" />
-          Your browser does not support the video tag.
         <div className="absolute inset-0 bg-black opacity-60"></div>
       </div>
-      
+
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-6 animate-fade-in">
           Catalyst for <span className="text-orange-400">sustainable change</span>
@@ -57,7 +75,7 @@ const Hero: React.FC = () => {
         </div>
       </div>
       
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+      <div className="absolute bottom-8 left-[43%] lg:left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
         <a href="#about" className="flex flex-col items-center text-white opacity-80 hover:opacity-100">
           <span className="mb-1 text-sm">Scroll Down</span>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

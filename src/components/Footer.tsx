@@ -15,13 +15,13 @@ const Footer: React.FC = () => {
               Catalyst for sustainable change in lives of underprivileged children, youth, and women.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-white">
+              <a href="https://www.facebook.com/share/15D6mWxgKj/?mibextid=qi2Omg" className="text-gray-300 hover:text-white">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white">
+              <a href="https://www.instagram.com/heavenonearth.change" className="text-gray-300 hover:text-white">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white">
+              <a href="https://x.com/heavengoearth?t=6drU1r9UaOo-6RWH4BSjGg&s=08" className="text-gray-300 hover:text-white">
                 <Twitter size={20} />
               </a>
             </div>
