@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, X } from 'lucide-react';
+import { GalleryImage, initialImages } from './Gallery';
 
 interface PhotoUpload {
   file: File;
@@ -13,6 +14,10 @@ const Admin: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(() => {
+    const saved = localStorage.getItem('galleryImages');
+    return saved ? JSON.parse(saved) : initialImages;
+  });
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,8 +69,18 @@ const Admin: React.FC = () => {
         return;
       }
 
-      // Here you would typically upload to your server/storage
-      console.log('Uploading photos:', uploads);
+      // Convert uploads to gallery images
+      const newImages: GalleryImage[] = uploads.map((upload, index) => ({
+        id: Date.now() + index,
+        src: upload.preview,
+        alt: upload.alt,
+        category: upload.category
+      }));
+
+      // Update gallery images in state and localStorage
+      const updatedImages = [...galleryImages, ...newImages];
+      setGalleryImages(updatedImages);
+      localStorage.setItem('galleryImages', JSON.stringify(updatedImages));
       
       setUploads([]);
       setError(null);
@@ -197,6 +212,25 @@ const Admin: React.FC = () => {
             </button>
           </div>
         )}
+
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4">Current Gallery Images</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {galleryImages.map((image) => (
+              <div key={image.id} className="border rounded-lg overflow-hidden">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-3">
+                  <p className="text-sm font-medium text-gray-900">{image.category}</p>
+                  <p className="text-sm text-gray-500">{image.alt}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
