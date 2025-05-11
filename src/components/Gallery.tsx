@@ -8,43 +8,56 @@ interface GalleryImage {
   category: string;
 }
 
+// Create a shared type for gallery images that can be imported by Admin
+export type { GalleryImage };
+
+// Create initial images array that can be imported and modified by Admin
+export const initialImages: GalleryImage[] = [
+  {
+    id: 1,
+    src: '/gallery/group-photo.jpg',
+    alt: 'Foundation members and volunteers at an event',
+    category: 'Cultural Events'
+  },
+  {
+    id: 2,
+    src: '/gallery/banner.jpg',
+    alt: 'Health camp and government schemes awareness program',
+    category: 'Health Camps'
+  },
+  {
+    id: 3,
+    src: '/gallery/collage1.jpg',
+    alt: 'Various foundation activities and programs',
+    category: 'Training Programs'
+  },
+  {
+    id: 4,
+    src: 'public/gallery/tree-planting.jpg',
+    alt: 'Environmental initiatives and tree planting',
+    category: 'Environmental'
+  },
+  {
+    id: 5,
+    src: '/gallery/independence.jpg',
+    alt: 'Independence Day celebrations with children',
+    category: 'Independence Day'
+  }
+];
+
 const Gallery: React.FC = () => {
   const categories = ['All', 'Independence Day', 'Health Camps', 'Cultural Events', 'Environmental', 'Training Programs'];
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const [images, setImages] = useState<GalleryImage[]>(initialImages);
 
-  const images: GalleryImage[] = [
-    {
-      id: 1,
-      src: '/gallery/group-photo.jpg',
-      alt: 'Foundation members and volunteers at an event',
-      category: 'Cultural Events'
-    },
-    {
-      id: 2,
-      src: '/gallery/banner.jpg',
-      alt: 'Health camp and government schemes awareness program',
-      category: 'Health Camps'
-    },
-    {
-      id: 3,
-      src: '/gallery/collage1.jpg',
-      alt: 'Various foundation activities and programs',
-      category: 'Training Programs'
-    },
-    {
-      id: 4,
-      src: 'public/gallery/tree-planting.jpg',
-      alt: 'Environmental initiatives and tree planting',
-      category: 'Environmental'
-    },
-    {
-      id: 5,
-      src: '/gallery/independence.jpg',
-      alt: 'Independence Day celebrations with children',
-      category: 'Independence Day'
+  // Load images from localStorage on component mount
+  React.useEffect(() => {
+    const savedImages = localStorage.getItem('galleryImages');
+    if (savedImages) {
+      setImages(JSON.parse(savedImages));
     }
-  ];
+  }, []);
 
   const filteredImages = activeCategory === 'All' 
     ? images 

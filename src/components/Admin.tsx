@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, X } from 'lucide-react';
+import { GalleryImage, initialImages } from './Gallery';
 
 interface PhotoUpload {
   file: File;
@@ -12,19 +13,37 @@ const Admin: React.FC = () => {
   const [uploads, setUploads] = useState<PhotoUpload[]>([]);
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(() => {
+    const saved = localStorage.getItem('galleryImages');
+    return saved ? JSON.parse(saved) : initialImages;
+  });
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would be a secure authentication process
     if (password === 'admin123') {
       setIsAuthenticated(true);
+      setError(null);
+    } else {
+      setError('Invalid password');
     }
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
     files.forEach(file => {
+      if (file.size > maxSize) {
+        setError(`File ${file.name} is too large. Maximum size is 10MB.`);
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        setError(`File ${file.name} is not an image.`);
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploads(prev => [...prev, {
@@ -33,23 +52,48 @@ const Admin: React.FC = () => {
           alt: '',
           preview: reader.result as string
         }]);
+        setError(null);
+      };
+      reader.onerror = () => {
+        setError(`Error reading file ${file.name}`);
       };
       reader.readAsDataURL(file);
     });
   };
 
   const handleUpload = async () => {
-    // In a real app, this would upload to a server
-    console.log('Uploading photos:', uploads);
-    // After successful upload, you would:
-    // 1. Save the photos to your storage
-    // 2. Update the gallery data
-    // 3. Clear the uploads
-    setUploads([]);
+    try {
+      const incompleteUploads = uploads.filter(upload => !upload.category || !upload.alt);
+      if (incompleteUploads.length > 0) {
+        setError('Please fill in category and alt text for all photos');
+        return;
+      }
+
+      // Convert uploads to gallery images
+      const newImages: GalleryImage[] = uploads.map((upload, index) => ({
+        id: Date.now() + index,
+        src: upload.preview,
+        alt: upload.alt,
+        category: upload.category
+      }));
+
+      // Update gallery images in state and localStorage
+      const updatedImages = [...galleryImages, ...newImages];
+      setGalleryImages(updatedImages);
+      localStorage.setItem('galleryImages', JSON.stringify(updatedImages));
+      
+      setUploads([]);
+      setError(null);
+    } catch (err) {
+      setError('Failed to upload photos. Please try again.');
+    }
   };
 
   const removeUpload = (index: number) => {
     setUploads(prev => prev.filter((_, i) => i !== index));
+    if (uploads.length === 1) {
+      setError(null);
+    }
   };
 
   if (!isAuthenticated) {
@@ -58,6 +102,11 @@ const Admin: React.FC = () => {
         <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
           <form onSubmit={handleLogin}>
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                {error}
+              </div>
+            )}
             <input
               type="password"
               value={password}
@@ -82,6 +131,12 @@ const Admin: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">Photo Management</h1>
         
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-md">
+            {error}
+          </div>
+        )}
+
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
             <input
@@ -132,6 +187,7 @@ const Admin: React.FC = () => {
                       setUploads(newUploads);
                     }}
                     className="w-full mt-4 px-3 py-2 border rounded-md"
+                    required
                   />
                   <input
                     type="text"
@@ -143,6 +199,7 @@ const Admin: React.FC = () => {
                       setUploads(newUploads);
                     }}
                     className="w-full mt-2 px-3 py-2 border rounded-md"
+                    required
                   />
                 </div>
               ))}
@@ -155,6 +212,25 @@ const Admin: React.FC = () => {
             </button>
           </div>
         )}
+
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4">Current Gallery Images</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {galleryImages.map((image) => (
+              <div key={image.id} className="border rounded-lg overflow-hidden">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-3">
+                  <p className="text-sm font-medium text-gray-900">{image.category}</p>
+                  <p className="text-sm text-gray-500">{image.alt}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
