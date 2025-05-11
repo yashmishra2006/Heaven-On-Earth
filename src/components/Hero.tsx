@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
+import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Importing the icons
 
 const Hero: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const [isMuted, setIsMuted] = useState(false); // Video starts unmuted
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,19 +39,35 @@ const Hero: React.FC = () => {
     };
   }, [isVideoVisible]);
 
+  // Function to toggle mute/unmute
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(videoRef.current.muted); // Update state
+    }
+  };
+
   return (
     <section id="home" className="relative h-screen flex items-center">
       <div className="absolute inset-0 overflow-hidden">
         <video 
           ref={videoRef}
-          autoPlay 
-          loop 
+          autoPlay
+          loop
+          muted={isMuted} // Dynamically set muted
           playsInline
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black opacity-60"></div>
       </div>
 
+      {/* Mute/Unmute Button with Sound Icon */}
+      <button 
+        onClick={toggleMute}
+        className="absolute bottom-4 left-4 bg-white text-black p-3 rounded-full shadow-lg hover:bg-gray-200 transition-colors"
+      >
+        {isMuted ? <FaVolumeMute size={24} /> : <FaVolumeUp size={24} />} {/* Toggle between icons */}
+      </button>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-6 animate-fade-in">
@@ -73,7 +91,7 @@ const Hero: React.FC = () => {
           </a>
         </div>
       </div>
-      
+
       <div className="absolute bottom-8 left-[43%] lg:left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
         <a href="#about" className="flex flex-col items-center text-white opacity-80 hover:opacity-100">
           <span className="mb-1 text-sm">Scroll Down</span>
