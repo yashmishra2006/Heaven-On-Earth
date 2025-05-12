@@ -15,66 +15,66 @@ const OurWork: React.FC = () => {
       id: 'independence',
       title: 'Independence Day Celebrations',
       icon: <Gift className="h-6 w-6 text-green-700" />,
-      description: 'Annual celebrations bringing communities together to honor our nation and instill patriotic values in children.',
-      image: './gallery/class-photo.jpg'
+      description: 'The Independence Day in India is celebrated every year on the 15th of August in honor of the birthday of the nation. On 15th August 1947, India achieved her independence from British rule and became a sovereign nation. The Independence Day is celebrated with great enthusiasm in all over the India. On this day tributes are paid to the freedom fighters who sacrificed their lives to gain the freedom for India. On this day HEAVEN ON EARTH FOUNDATION celebrates independence day at village bhanpur Delhi district on this independence day study material and sweets were distributed to all students. ',
+      image: './gallery/work/independence.png'
     },
     {
       id: 'vocational',
       title: 'Silai Kadai & Vocational Training',
       icon: <Briefcase className="h-6 w-6 text-green-700" />,
-      description: 'Empowering women with sewing and tailoring skills to achieve financial independence and sustainable livelihoods.',
-      image: 'https://images.pexels.com/photos/3961581/pexels-photo-3961581.jpeg'
+      description: 'Training Programmes for the slum areas to aware the community about their Training and also undertakes various short term and long term Training programmes for poor and slum women to make them self dependent and to protect them from any type of exploitation. Society organise various Women Silai Kadai Training Programmes at various City & villages of Madhya Pradesh in which huge number of Women were gathered to understand the importance of Stitching , Embroidary , Ready Made Garments , silai kadhai along with Beauty Parlor Training Program under various Private / Public Sponsorship for the various Programs .In this training Program society provides the training of appx 75 women in the field of Vocational Training and other skill development training programs through out the year in various places of Delhi. ',
+      image: './gallery/work/silai.png'
     },
     {
       id: 'jewelry',
       title: 'Artificial Jewellery / Papad Making',
       icon: <Gem className="h-6 w-6 text-green-700" />,
-      description: 'Training programs for women to create beautiful jewelry and traditional food products for economic empowerment.',
-      image: 'https://images.pexels.com/photos/1458867/pexels-photo-1458867.jpeg'
+      description: 'Society undertakes under the Sponsorship of the various Active Social Group of Delhi under various Training Program such as ARTIFICIAL JEWELLARY / BEAUTY PARLOUR TRINING PROGRAM / PAPAD MAKING TRAINING amoung the BPL beneficiaries and in this Program more than 80 Women participated for the Learning of the Beauty Parlour Running and Training Skill . Programmes at various City & villages of Madhya Pradesh in which huge number of Women were gathered to understand the importance of Silai Kadai.',
+      image: './gallery/work/jewelery.png'
     },
     {
       id: 'education',
       title: 'Education & Computer Literacy',
       icon: <BookOpen className="h-6 w-6 text-green-700" />,
       description: 'Providing quality education and digital literacy to bridge the technology gap and create future opportunities.',
-      image: 'https://images.pexels.com/photos/4145153/pexels-photo-4145153.jpeg'
+      image: './gallery/work/education.png'
     },
     {
       id: 'health',
       title: 'Yoga and Health Camps',
       icon: <Yoga className="h-6 w-6 text-green-700" />,
-      description: 'Promoting holistic well-being through yoga sessions and regular health check-ups for communities.',
-      image: 'https://images.pexels.com/photos/3823039/pexels-photo-3823039.jpeg'
+      description: 'Yoga is an ancient physical, mental and spiritual practice that originated in India. The word ‘yoga’ derives from Sanskrit and means to join or to unite, symbolizing the union of body and consciousness . On 21st june 2019 HEAVEN ON EARTH FOUNDATION conduct free yoga camp . where large number of people participated. On this free yoga camp public got health benefits . around 300 of participants participated . outcome and response of this yoga camp was trimandus . HEAVEN ON EARTH FOUNDATION  organaized time to time over a year such kind of health camps. ',
+      image: './gallery/work/yoga.png'
     },
     {
       id: 'cultural',
       title: 'Cultural Programs & Tribal Workshops',
       icon: <Music className="h-6 w-6 text-green-700" />,
-      description: 'Preserving and celebrating cultural heritage through performances, workshops, and community engagement.',
-      image: 'https://images.pexels.com/photos/1430931/pexels-photo-1430931.jpeg'
+      description: 'HEAVEN ON EARTH FOUNDATION celebrate ,Gandhi Jayanti , Teachers Day , Youth Day Celebration , Essay writing competition , Music Competition , Dance Competition , Sports and other competitions were organized in which all the society members participated and contributed a lot. Society runs various Cultural Promotion Program , Nukkad Natak and Other Festival Celebration Program on Teachers Day , Holi Milan Samaroh , Guri Padwa, Besakhi , Ambedkar Jayanti , Laxmi Bai jayanti and other activities for the year .',
+      image: './gallery/work/cultural.png'
     },
     {
-      id: 'covid',
-      title: 'Covid-19 Relief Work',
+      id: 'awareness',
+      title: 'Women & Child Development Program',
       icon: <Heart className="h-6 w-6 text-green-700" />,
-      description: 'Emergency response initiatives providing essential supplies, medical aid, and support during the pandemic.',
-      image: 'https://images.pexels.com/photos/4167541/pexels-photo-4167541.jpeg'
+      description: 'Conducted workshops on women’s rights, child nutrition, parenting, and provided basic support services to mothers and children.',
+      image: './gallery/work/womenchild.png'
     },
     {
       id: 'environment',
       title: 'Environmental Initiatives',
       icon: <Leaf className="h-6 w-6 text-green-700" />,
       description: 'Tree plantation drives and awareness programs promoting environmental conservation and sustainability.',
-      image: 'https://images.pexels.com/photos/4201831/pexels-photo-4201831.jpeg'
+      image: './gallery/work/tree.png'
     },
     {
-      id: 'infrastructure',
-      title: 'Infrastructure Contributions',
+      id: 'handicap',
+      title: 'Handicap Welfare Program',
       icon: <School className="h-6 w-6 text-green-700" />,
-      description: 'Providing essential infrastructure like desks, chairs, and learning materials to under-resourced schools.',
-      image: 'https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg'
-    }
-  ];
+      description: 'Provided aid including mobility devices, counseling, and health checkups to individuals with disabilities..',
+      image: './gallery/work/disability.png'}
+
+    ];
 
   const [activeCategory, setActiveCategory] = useState<string>(categories[0].id);
 
