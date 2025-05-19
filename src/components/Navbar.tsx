@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
               <span className={`text-xl font-serif font-semibold ${
                 isScrolled ? 'text-green-800' : 'text-white'
               }`}>
-                Heaven on Earth
+                Heaven on Earth Foundation
               </span>
             </a>
           </div>
