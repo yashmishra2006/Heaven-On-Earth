@@ -12,6 +12,7 @@ import GetInvolved from './components/GetInvolved';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Admin from './components/Admin';
+import Policies from './components/Policies';
 import './index.css';
 
 function App() {
@@ -23,6 +24,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/admin" element={<Admin />} />
+        <Route path="/policies/:policyType" element={<Policies />} />
+        <Route path="/policies" element={<Policies />} />
         <Route path="/" element={
           <div>
             <Navbar />

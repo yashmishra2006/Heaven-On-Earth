@@ -1,5 +1,6 @@
 import React from 'react';
 import { Heart, Mail, Phone, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   return (
@@ -68,8 +69,15 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t border-green-800 mt-8 pt-8 text-center text-gray-300">
-          <p>&copy; {new Date().getFullYear()} Heaven on Earth Foundation. All rights reserved.</p>
+        <div className="border-t border-green-800 mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center text-gray-300 text-sm">
+            <p>&copy; {new Date().getFullYear()} Heaven on Earth Foundation. All rights reserved.</p>
+            <div className="flex space-x-4 mt-4 md:mt-0">
+              <Link to="/policies/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link to="/policies/terms" className="hover:text-white transition-colors">Terms & Conditions</Link>
+              <Link to="/policies/refund" className="hover:text-white transition-colors">Refund Policy</Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
