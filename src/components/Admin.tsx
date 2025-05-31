@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, X, Users, Image } from 'lucide-react';
+import { Upload, X, Users, Image, Trash2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { GalleryImage } from './Gallery';
 
@@ -189,6 +189,43 @@ const Admin: React.FC = () => {
     }
   };
 
+  const handleDeleteImage = async (image: GalleryImage) => {
+    try {
+      setLoading(true);
+      
+      // Extract the file name from the URL
+      const fileName = image.src.split('/').pop();
+      
+      if (!fileName) {
+        throw new Error('Invalid file name');
+      }
+
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from('gallery')
+        .remove([fileName]);
+
+      if (storageError) throw storageError;
+
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('gallery_images')
+        .delete()
+        .eq('id', image.id);
+
+      if (dbError) throw dbError;
+
+      // Refresh images list
+      await fetchImages();
+      setError(null);
+    } catch (err) {
+      setError('Failed to delete image. Please try again.');
+      console.error('Delete error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const removeUpload = (index: number) => {
     setUploads(prev => prev.filter((_, i) => i !== index));
     if (uploads.length === 1) {
@@ -247,6 +284,37 @@ const Admin: React.FC = () => {
       </div>
     );
   }
+
+  const renderGalleryImages = () => (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-xl font-semibold mb-4">Current Gallery Images</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {images.map((image) => (
+          <div key={image.id} className="border rounded-lg overflow-hidden relative group">
+            <img
+              src={image.src}
+              alt={image.alt}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-3">
+              <p className="text-sm font-medium text-gray-900">{image.category}</p>
+              <p className="text-sm text-gray-500">{image.alt}</p>
+            </div>
+            <button
+              onClick={() => handleDeleteImage(image)}
+              className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
+              title="Delete image"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+      {images.length === 0 && (
+        <p className="text-center py-4 text-gray-500">No images in the gallery.</p>
+      )}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -374,24 +442,7 @@ const Admin: React.FC = () => {
               </div>
             )}
 
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">Current Gallery Images</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {images.map((image) => (
-                  <div key={image.id} className="border rounded-lg overflow-hidden">
-                    <img
-                      src={image.src}
-                      alt={image.alt}
-                      className="w-full h-48 object-cover"
-                    />
-                    <div className="p-3">
-                      <p className="text-sm font-medium text-gray-900">{image.category}</p>
-                      <p className="text-sm text-gray-500">{image.alt}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            {renderGalleryImages()}
           </>
         ) : (
           <div className="bg-white rounded-lg shadow-md p-6">
