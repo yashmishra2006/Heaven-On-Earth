@@ -14,6 +14,9 @@ import Footer from './components/Footer';
 import Admin from './components/Admin';
 import Policies from './components/Policies';
 import './index.css';
+import { supabase } from './lib/supabase'; // adjust path if needed
+
+window.supabase = supabase;
 
 function App() {
   useEffect(() => {
