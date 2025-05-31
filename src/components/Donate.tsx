@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Heart, Gift, Users, Leaf } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface DonationOption {
   amount: number;
@@ -13,6 +14,8 @@ const Donate: React.FC = () => {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState<string>('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -66,18 +69,43 @@ const Donate: React.FC = () => {
     setCustomAmount('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const finalAmount = selectedAmount || Number(customAmount);
+    
     if (!finalAmount || finalAmount < 1) {
       alert('Please select or enter a valid donation amount');
       return;
     }
-    // TODO: Implement payment processing
-    console.log('Processing donation:', {
-      amount: finalAmount,
-      message: message.trim()
-    });
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Store donation message if provided
+      if (message.trim()) {
+        const { error: messageError } = await supabase
+          .from('donation_messages')
+          .insert([{
+            amount: finalAmount,
+            message: message.trim()
+          }]);
+
+        if (messageError) throw messageError;
+      }
+
+      // TODO: Implement payment processing
+      console.log('Processing donation:', {
+        amount: finalAmount,
+        message: message.trim()
+      });
+      
+    } catch (err: any) {
+      setError(err.message || 'Failed to process donation');
+      console.error('Donation error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -88,6 +116,12 @@ const Donate: React.FC = () => {
           <p className="text-xl text-gray-600">Your support helps us create lasting change</p>
           <div className="w-20 h-1 bg-orange-500 mx-auto mt-4"></div>
         </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="bg-white rounded-xl shadow-lg p-6">
@@ -147,15 +181,18 @@ const Donate: React.FC = () => {
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
               placeholder="Share why you're supporting our cause..."
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 p-4"
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="w-full py-4 px-6 bg-orange-600 text-white font-medium rounded-xl hover:bg-orange-700 transition-colors shadow-lg"
+            disabled={loading}
+            className={`w-full py-4 px-6 bg-orange-600 text-white font-medium rounded-xl hover:bg-orange-700 transition-colors shadow-lg ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            Donate ₹{selectedAmount || customAmount || '0'}
+            {loading ? 'Processing...' : `Donate ₹${selectedAmount || customAmount || '0'}`}
           </button>
         </form>
       </div>
