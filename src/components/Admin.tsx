@@ -11,8 +11,8 @@ interface PhotoUpload {
 }
 
 interface Volunteer {
-  id: uuid;
-  created_at: timestamptz;
+  id: string;
+  created_at: string;
   name: string;
   email: string;
   phone: string | null;
