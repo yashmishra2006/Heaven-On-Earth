@@ -11,13 +11,13 @@ interface PhotoUpload {
 }
 
 interface Volunteer {
-  id: number;
+  id: string; // Changed from number to string since it's a UUID
   created_at: string;
   name: string;
   email: string;
-  phone: string;
+  phone: string | null;
   interest: string;
-  message: string;
+  message: string | null;
 }
 
 const Admin: React.FC = () => {
@@ -57,6 +57,7 @@ const Admin: React.FC = () => {
 
   const fetchVolunteers = async () => {
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('volunteers')
         .select('*')
@@ -64,9 +65,12 @@ const Admin: React.FC = () => {
 
       if (error) throw error;
       setVolunteers(data || []);
+      setError(null);
     } catch (err) {
       setError('Failed to load volunteer data');
       console.error('Error fetching volunteers:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -334,35 +338,43 @@ const Admin: React.FC = () => {
         ) : (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-6">Registered Volunteers</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interest Area</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration Date</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {volunteers.map((volunteer) => (
-                    <tr key={volunteer.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">{volunteer.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{volunteer.email}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{volunteer.phone}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{volunteer.interest}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {new Date(volunteer.created_at).toLocaleDateString()}
-                      </td>
+            {loading ? (
+              <div className="flex justify-center items-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-4 border-green-700 border-t-transparent"></div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interest Area</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration Date</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              {volunteers.length === 0 && (
-                <p className="text-center py-4 text-gray-500">No volunteers registered yet.</p>
-              )}
-            </div>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {volunteers.map((volunteer) => (
+                      <tr key={volunteer.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">{volunteer.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{volunteer.email}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{volunteer.phone || '-'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{volunteer.interest}</td>
+                        <td className="px-6 py-4">{volunteer.message || '-'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {new Date(volunteer.created_at).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {volunteers.length === 0 && (
+                  <p className="text-center py-4 text-gray-500">No volunteers registered yet.</p>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
