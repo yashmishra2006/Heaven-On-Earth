@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, X, Users, Image, Trash2 } from 'lucide-react';
+import { Upload, X, Users, Image, Trash2, MessageCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { GalleryImage } from './Gallery';
 
@@ -20,6 +20,14 @@ interface Volunteer {
   message: string | null;
 }
 
+interface DonationMessage {
+  id: string;
+  created_at: string;
+  amount: number;
+  message: string;
+  status: string;
+}
+
 const Admin: React.FC = () => {
   const [uploads, setUploads] = useState<PhotoUpload[]>([]);
   const [email, setEmail] = useState('');
@@ -29,7 +37,8 @@ const Admin: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
-  const [activeSection, setActiveSection] = useState<'gallery' | 'volunteers'>('gallery');
+  const [donationMessages, setDonationMessages] = useState<DonationMessage[]>([]);
+  const [activeSection, setActiveSection] = useState<'gallery' | 'volunteers' | 'donations'>('gallery');
 
   useEffect(() => {
     checkAuth();
@@ -37,10 +46,16 @@ const Admin: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (activeSection === 'gallery') {
-        fetchImages();
-      } else {
-        fetchVolunteers();
+      switch (activeSection) {
+        case 'gallery':
+          fetchImages();
+          break;
+        case 'volunteers':
+          fetchVolunteers();
+          break;
+        case 'donations':
+          fetchDonationMessages();
+          break;
       }
     }
   }, [isAuthenticated, activeSection]);
@@ -48,6 +63,25 @@ const Admin: React.FC = () => {
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     setIsAuthenticated(!!session);
+  };
+
+  const fetchDonationMessages = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('donation_messages')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setDonationMessages(data || []);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load donation messages');
+      console.error('Error fetching donation messages:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchImages = async () => {
@@ -345,6 +379,17 @@ const Admin: React.FC = () => {
                 <Users className="h-5 w-5 mr-2" />
                 Volunteer List
               </button>
+              <button
+                onClick={() => setActiveSection('donations')}
+                className={`flex items-center px-4 py-2 rounded-md ${
+                  activeSection === 'donations'
+                    ? 'bg-green-700 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <MessageCircle className="h-5 w-5 mr-2" />
+                Donation Messages
+              </button>
             </div>
             <button
               onClick={handleSignOut}
@@ -444,7 +489,7 @@ const Admin: React.FC = () => {
 
             {renderGalleryImages()}
           </>
-        ) : (
+        ) : activeSection === 'volunteers' ? (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-6">Registered Volunteers</h2>
             {loading ? (
@@ -481,6 +526,53 @@ const Admin: React.FC = () => {
                 </table>
                 {volunteers.length === 0 && (
                   <p className="text-center py-4 text-gray-500">No volunteers registered yet.</p>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold mb-6">Donation Messages</h2>
+            {loading ? (
+              <div className="flex justify-center items-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-4 border-green-700 border-t-transparent"></div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount (₹)</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {donationMessages.map((donation) => (
+                      <tr key={donation.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {new Date(donation.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">{donation.amount}</td>
+                        <td className="px-6 py-4">{donation.message}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            donation.status === 'pending'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : donation.status === 'completed'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {donation.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {donationMessages.length === 0 && (
+                  <p className="text-center py-4 text-gray-500">No donation messages yet.</p>
                 )}
               </div>
             )}
