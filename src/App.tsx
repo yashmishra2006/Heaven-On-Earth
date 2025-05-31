@@ -13,7 +13,11 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Admin from './components/Admin';
 import Policies from './components/Policies';
+import Donate from './components/Donate';
 import './index.css';
+import { supabase } from './lib/supabase';
+
+window.supabase = supabase;
 
 function App() {
   useEffect(() => {
@@ -26,6 +30,13 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/policies/:policyType" element={<Policies />} />
         <Route path="/policies" element={<Policies />} />
+        <Route path="/donate" element={
+          <>
+            <Navbar />
+            <Donate />
+            <Footer />
+          </>
+        } />
         <Route path="/" element={
           <div>
             <Navbar />

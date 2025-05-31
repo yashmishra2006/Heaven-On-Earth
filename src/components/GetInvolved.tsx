@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 interface FormData {
   name: string;
@@ -9,6 +11,7 @@ interface FormData {
 }
 
 const GetInvolved: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -18,6 +21,7 @@ const GetInvolved: React.FC = () => {
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -27,23 +31,32 @@ const GetInvolved: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real implementation, you would submit the form data to a server
-    console.log(formData);
-    setFormSubmitted(true);
+    try {
+      const { error: supabaseError } = await supabase
+        .from('volunteers')
+        .insert([formData]);
 
-    // Reset form after submission
-    setTimeout(() => {
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        interest: '',
-        message: ''
-      });
-      setFormSubmitted(false);
-    }, 5000);
+      if (supabaseError) throw supabaseError;
+
+      setFormSubmitted(true);
+      setError(null);
+
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          interest: '',
+          message: ''
+        });
+        setFormSubmitted(false);
+      }, 5000);
+    } catch (err) {
+      setError('Failed to submit form. Please try again.');
+      console.error('Form submission error:', err);
+    }
   };
 
   return (
@@ -82,20 +95,32 @@ const GetInvolved: React.FC = () => {
                   Support our mission with a financial contribution. Your donations help fund our programs and create lasting impact.
                 </p>
                 <div className="grid grid-cols-3 gap-3 mb-4">
-                  <div className="bg-white p-3 rounded text-center border border-gray-200 hover:border-orange-400 cursor-pointer transition-colors">
+                  <div 
+                    className="bg-white p-3 rounded text-center border border-gray-200 hover:border-orange-400 cursor-pointer transition-colors"
+                    onClick={() => navigate('/donate?amount=500')}
+                  >
                     <p className="font-bold text-orange-600">₹500</p>
                     <p className="text-sm text-gray-600">Monthly</p>
                   </div>
-                  <div className="bg-white p-3 rounded text-center border border-gray-200 hover:border-orange-400 cursor-pointer transition-colors">
+                  <div 
+                    className="bg-white p-3 rounded text-center border border-gray-200 hover:border-orange-400 cursor-pointer transition-colors"
+                    onClick={() => navigate('/donate?amount=1000')}
+                  >
                     <p className="font-bold text-orange-600">₹1,000</p>
                     <p className="text-sm text-gray-600">Monthly</p>
                   </div>
-                  <div className="bg-white p-3 rounded text-center border border-gray-200 hover:border-orange-400 cursor-pointer transition-colors">
+                  <div 
+                    className="bg-white p-3 rounded text-center border border-gray-200 hover:border-orange-400 cursor-pointer transition-colors"
+                    onClick={() => navigate('/donate?amount=5000')}
+                  >
                     <p className="font-bold text-orange-600">₹5,000</p>
                     <p className="text-sm text-gray-600">One-time</p>
                   </div>
                 </div>
-                <button className="w-full py-2 bg-orange-600 text-white font-medium rounded hover:bg-orange-700 transition-colors">
+                <button 
+                  onClick={() => navigate('/donate')}
+                  className="w-full py-2 bg-orange-600 text-white font-medium rounded hover:bg-orange-700 transition-colors"
+                >
                   Donate Now
                 </button>
               </div>
@@ -113,12 +138,18 @@ const GetInvolved: React.FC = () => {
           <div className="bg-gray-50 p-8 rounded-lg shadow-md">
             <h3 className="text-2xl font-semibold text-green-800 mb-6">Volunteer Registration</h3>
             
-            {formSubmitted ? (
+            {formSubmitted && (
               <div className="bg-green-100 p-4 rounded-lg text-green-800 mb-4">
                 <p className="font-medium">Thank you for your interest!</p>
                 <p>We've received your information and will contact you soon about volunteer opportunities.</p>
               </div>
-            ) : null}
+            )}
+
+            {error && (
+              <div className="bg-red-100 p-4 rounded-lg text-red-800 mb-4">
+                <p>{error}</p>
+              </div>
+            )}
             
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
