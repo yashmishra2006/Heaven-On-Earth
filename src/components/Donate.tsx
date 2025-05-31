@@ -17,6 +17,9 @@ const Donate: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    
     // Get amount from URL params if present
     const params = new URLSearchParams(location.search);
     const amount = params.get('amount');
