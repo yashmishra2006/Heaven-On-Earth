@@ -11,7 +11,7 @@ interface PhotoUpload {
 }
 
 interface Volunteer {
-  id: string; // Changed from number to string since it's a UUID
+  id: string;
   created_at: string;
   name: string;
   email: string;
@@ -76,7 +76,12 @@ const Admin: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'admin123') {
+    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+    if (!adminPassword) {
+      setError('Admin password not configured');
+      return;
+    }
+    if (password === adminPassword) {
       setIsAuthenticated(true);
       setError(null);
     } else {
