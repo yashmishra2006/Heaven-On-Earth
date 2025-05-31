@@ -22,6 +22,16 @@ const Navbar: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
+  const navItems = [
+    { name: 'Home', id: 'home' },
+    { name: 'About Us', id: 'about' },
+    { name: 'Our Work', id: 'work' },
+    { name: 'Impact', id: 'impact' },
+    { name: 'Gallery', id: 'gallery' },
+    { name: 'Get Involved', id: 'involved' },
+    { name: 'Contact', id: 'contact' }
+  ];
+
   return (
     <nav 
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
@@ -44,17 +54,17 @@ const Navbar: React.FC = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            {['Home', 'About Us', 'Our Work', 'Impact', 'Gallery', 'Get Involved', 'Contact'].map((item) => (
+            {navItems.map((item) => (
               <a
-                key={item}
-                href={`#${item.toLowerCase().replace(/\s+/g, '')}`}
+                key={item.name}
+                href={`#${item.id}`}
                 className={`font-medium transition-colors duration-200 ${
                   isScrolled
                     ? 'text-gray-800 hover:text-green-700'
                     : 'text-white hover:text-orange-300'
                 }`}
               >
-                {item}
+                {item.name}
               </a>
             ))}
             <a
@@ -91,14 +101,14 @@ const Navbar: React.FC = () => {
         } overflow-hidden bg-white shadow-lg`}
       >
         <div className="px-4 py-2 space-y-1">
-          {['Home', 'About Us', 'Our Work', 'Impact', 'Gallery', 'Get Involved', 'Contact'].map((item) => (
+          {navItems.map((item) => (
             <a
-              key={item}
-              href={`#${item.toLowerCase().replace(/\s+/g, '')}`}
+              key={item.name}
+              href={`#${item.id}`}
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-green-700 hover:bg-gray-50"
               onClick={() => setIsOpen(false)}
             >
-              {item}
+              {item.name}
             </a>
           ))}
           <a
