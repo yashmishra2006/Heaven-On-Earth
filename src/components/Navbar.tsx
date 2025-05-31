@@ -36,7 +36,12 @@ const Navbar: React.FC = () => {
   ];
 
   const handleNavClick = (id: string) => {
-    if (!isHomePage) {
+    if (isHomePage) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
       window.location.href = `/#${id}`;
     }
   };
@@ -71,7 +76,7 @@ const Navbar: React.FC = () => {
                   isScrolled
                     ? 'text-gray-800 hover:text-green-700'
                     : 'text-white hover:text-orange-300'
-                }`}
+                } bg-transparent border-none cursor-pointer`}
               >
                 {item.name}
               </button>
@@ -117,7 +122,7 @@ const Navbar: React.FC = () => {
                 handleNavClick(item.id);
                 setIsOpen(false);
               }}
-              className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-green-700 hover:bg-gray-50"
+              className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-green-700 hover:bg-gray-50 bg-transparent border-none cursor-pointer"
             >
               {item.name}
             </button>
